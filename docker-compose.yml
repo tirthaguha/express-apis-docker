@@ -1,0 +1,44 @@
+version: "3"
+
+services:
+  nodejs_1:
+    image: card-deck-test
+    build:
+      context: ./card-deck-test
+      dockerfile: Dockerfile
+    ports:
+      - 4000:4000
+      - 4001:4000
+    container_name: card-deck-test
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  nodejs_2:
+    image: harry-potter-test
+    build:
+      context: ./harry-potter-test
+      dockerfile: Dockerfile
+    ports:
+      - 3001:3000
+      - 3000:3000
+    container_name: harry-potter-test
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  nginx-server:
+    image: nginx-load-balancer
+    build:
+      context: ./nginx-docker
+      dockerfile: Dockerfile
+    ports:
+      - 8080:80
+    container_name: nginx-load-balancer
+    restart: unless-stopped
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
